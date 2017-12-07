@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
@@ -27,7 +28,8 @@ public class Server {
 	public final static int PORT = 9000;
 	private static DB db;
 	private static HashMap<String, User> userList = new HashMap<String, User>();
-	private HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
+	private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
+	private static HashSet<ObjectOutputStream> oouts = new HashSet<ObjectOutputStream>(); 
 	private static List<Room> roomList = new ArrayList<Room>();
 	private static AtomicInteger atomicInteger = new AtomicInteger();
 
@@ -51,12 +53,14 @@ public class Server {
 		}
 	}
 
-	private static class Handler extends Thread {
+	private static class Handler extends Thread{
 		private Socket socket;
 		private BufferedReader in;
 		private PrintWriter out;
 		private ObjectOutputStream oout;
-		
+		private String userId;
+		private Room gameRoom;
+
 		public Handler(Socket socket) {
 			this.socket = socket;
 		}
@@ -66,40 +70,54 @@ public class Server {
 				JSONParser parser = new JSONParser();
 				JSONObject inJSON;
 				JSONObject outJSON;
-				
-				in = new BufferedReader(new InputStreamReader(
-						socket.getInputStream()));
-				out = new PrintWriter(socket.getOutputStream(), true);
-				
-				//oout = new ObjectOutputStream(socket.getOutputStream());
-				
+				int stringIndex;
+
+				OutputStream outputStream = socket.getOutputStream(); 
+				oout = new ObjectOutputStream(outputStream);
+
+				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				out = new PrintWriter(outputStream, true);
+
 				while(true) {
 					//login
 					outJSON = new JSONObject();
 					outJSON.put("type", "LOGIN");
 					outJSON.put("state", "WAIT");
-					out.println(outJSON.toString());
+					out.println(outJSON.toJSONString());
 
 					String input = in.readLine();
 
 					inJSON = (JSONObject) parser.parse(input);
 
-					String userId = inJSON.get("userID").toString();
+					userId = inJSON.get("userID").toString();
 					String pw = inJSON.get("pw").toString();
 
 					if(userId.isEmpty() || pw.isEmpty())
 						continue;
 
 					User newUser = login(userId, pw);
+					HashMap<Integer, String> roomListForFirst = new HashMap<>();
+					
+					if(!roomList.isEmpty()) {
+						for(Room r : roomList) {
+							roomListForFirst.put(r.getRoomNum(), r.getRoomName());
+						}
+					}
+
+
 					if(newUser != null) {
-						newUser.setSocket(socket);
 						synchronized(userList) {
 							if(!userList.containsKey(userId)) {
 								userList.put(userId, newUser);
+								writers.add(out);
+								oouts.add(oout);
 								outJSON.put("type", "LOGIN");
 								outJSON.put("state", "SUCCESS");
 								outJSON.put("userName", newUser.getName());
 								out.println(outJSON);
+								oout.writeObject(roomListForFirst);
+								oout.flush();
+								oout.reset();
 								break;
 							}
 						}
@@ -114,8 +132,9 @@ public class Server {
 				while(true) {
 					inJSON = new JSONObject();
 					String input = in.readLine();
+					stringIndex = input.indexOf("{");
 
-					inJSON = (JSONObject) parser.parse(input);
+					inJSON = (JSONObject) parser.parse(input.substring(stringIndex));
 
 					if(inJSON.isEmpty())
 						continue;
@@ -124,7 +143,8 @@ public class Server {
 
 					switch(type) {
 					case "CREATEROOM" :
-						if(createRoom(inJSON)) { 
+						gameRoom = createRoom(inJSON);
+						if(gameRoom != null) {
 							outJSON.put("type", "CREATEROOM");
 							outJSON.put("state", "SUCCESS");
 							outJSON.put("roomNum", atomicInteger.get());
@@ -137,7 +157,8 @@ public class Server {
 						}
 						break;
 					case "ENTERROOM" :
-
+						break;
+					case "EXITROOM" :
 						break;
 					}
 				}		
@@ -145,17 +166,42 @@ public class Server {
 			catch(Exception e) {
 				e.printStackTrace();
 			}
+			finally {
+				try {
+					in.close();
+					out.close();
+					synchronized(userList) {
+						userList.remove(userId);
+					}
+				} catch(Exception e) {}
+			}
 		}
 
-		private boolean createRoom(JSONObject json) {
+		private void broadcast(JSONObject json) {
+			for(PrintWriter writer : writers) {
+				writer.println(json.toString());
+			}
+		}
+		
+		private void broadcast(Object o) throws IOException {
+			for(ObjectOutputStream oout : oouts) {
+				oout.writeObject(o);
+				oout.flush();
+				oout.reset();
+			}
+		}
+
+		private Room createRoom(JSONObject json) {
 			synchronized(roomList) {
 				User userMaster = userList.get(json.get("userID").toString());
 				String mode = json.get("mode").toString();
 				String roomName = json.get("roomName").toString();
 				if(roomName.isEmpty() || mode.isEmpty() || userMaster == null)
-					return false;
+					return null;
 
 				int roomNum = atomicInteger.incrementAndGet();
+				userMaster.setNowLocation(roomNum);
+				userList.put(json.get("userID").toString(), userMaster);
 				Room room = new Room(roomNum);
 
 				room.setMode(mode);
@@ -163,7 +209,7 @@ public class Server {
 				room.setRoomNum(roomNum);
 				room.setRoomMaster(userMaster);
 				roomList.add(room);
-				return true;
+				return room;
 			}
 		}
 

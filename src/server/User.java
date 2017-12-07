@@ -1,22 +1,21 @@
-package info;
+package server;
 
-import java.net.Socket;
 
 public class User {
 	private String id = "";
 	private String name = "";
-	private String nowLocation;
-	private Socket socket;
+	private int nowLocation;
 	
 	public User(String id, String name) {
 		this.id = id;
+		nowLocation = 0;
 	}
 
-	public String getNowLocation() {
+	public int getNowLocation() {
 		return nowLocation;
 	}
 
-	public void setNowLocation(String nowLocation) {
+	public void setNowLocation(int nowLocation) {
 		this.nowLocation = nowLocation;
 	}
 
@@ -41,13 +40,5 @@ public class User {
 			return true;
 		else
 			return false;
-	}
-
-	public Socket getSocket() {
-		return socket;
-	}
-
-	public void setSocket(Socket socket) {
-		this.socket = socket;
 	}
 }

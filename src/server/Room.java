@@ -1,4 +1,4 @@
-package info;
+package server;
 
 import java.util.List;
 
@@ -7,17 +7,30 @@ public class Room {
 	private String roomName;
 	private String mode;
 	private User roomMaster;
+	private int maxPersonnel;
 	private List<User> userList;
-	
+
 	public Room(User roomMaster) {
 		this.setRoomMaster(roomMaster);
 		userList.add(roomMaster);
 	}
-	
+
 	public Room(int roomNum) {
 		this.roomNum = roomNum;
 	}
+
+	public boolean enterRoom(User newUser) {
+		if(userList.size() > maxPersonnel)
+			return false;
+		synchronized(userList) {
+			userList.add(newUser);
+			return true;
+		}
+	}
 	
+	public void closeRoom() {
+		userList.clear();
+	}
 
 	public int getRoomNum() {
 		return roomNum;
@@ -50,5 +63,16 @@ public class Room {
 	public void setRoomMaster(User roomMaster) {
 		this.roomMaster = roomMaster;
 	}
-	
+
+	public int getPersonnel() {
+		return userList.size();
+	}
+
+	public int getMaxPersonnel() {
+		return maxPersonnel;
+	}
+
+	public void setMaxPersonnel(int maxPersonnel) {
+		this.maxPersonnel = maxPersonnel;
+	}
 }
