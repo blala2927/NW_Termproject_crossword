@@ -94,7 +94,7 @@ public class Client {
 					
 					if(createState.equals("SUCCESS")) {
 						lobbyFrame.setVisible(false);
-						roomFrame = new RoomFrame(inJSON.get("roomNum").toString());
+						roomFrame = new RoomFrame(inJSON.get("roomNum").toString(), userID);
 						roomFrame.setVisible(true);
 					}
 					else if(createState.equals("FAIL"))
