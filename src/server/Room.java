@@ -1,6 +1,8 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.List;
+import info.RoomFrame;
 
 public class Room {
 	private int roomNum;
@@ -8,7 +10,8 @@ public class Room {
 	private String mode;
 	private User roomMaster;
 	private int maxPersonnel;
-	private List<User> userList;
+	private RoomFrame roomFrame;
+	private List<User> userList = new ArrayList<User>();
 
 	public Room(User roomMaster) {
 		this.setRoomMaster(roomMaster);
@@ -74,5 +77,13 @@ public class Room {
 
 	public void setMaxPersonnel(int maxPersonnel) {
 		this.maxPersonnel = maxPersonnel;
+	}
+	
+	public RoomFrame getRoomFrame() {
+		return roomFrame;
+	}
+
+	public void setRoomFrame(RoomFrame roomFrame) {
+		this.roomFrame = roomFrame;
 	}
 }

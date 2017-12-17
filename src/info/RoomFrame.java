@@ -1,7 +1,6 @@
 package info;
 
 import java.awt.BorderLayout;
-import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -9,50 +8,49 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
-import java.awt.Color;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.JTextArea;
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import javax.swing.border.LineBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.TextArea;
 
 public class RoomFrame extends JFrame {
 
 	private JPanel contentPane;
-	public Map1 map;
+	public Map map;
 	public JLabel idLabel;
 	public JLabel idLabel2;
 	private JTextField textField;
-	
+	private JPanel centerPanel;
 	
 	/**
 	 * Create the frame.
 	 */
-	public RoomFrame(String roomNum, String id) {
-		super(roomNum);
-		
+	public RoomFrame(int roomNum, String id) {
+		super(String.valueOf(roomNum));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 785, 718);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		JPanel centerPanel = new JPanel();
+		centerPanel = new JPanel();
+		centerPanel.setLayout(new BorderLayout(0, 0));
 		centerPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		contentPane.add(centerPanel, BorderLayout.CENTER);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		centerPanel.add(btnNewButton_1);
+		JButton btnNewButton_1 = new JButton("게임시작");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gameStart();
+				centerPanel.add(map.getContentPanel(), BorderLayout.CENTER);
+				System.out.println("Dd");
+			}
+		});
 		
-		JButton btnNewButton_2 = new JButton("New button");
-		centerPanel.add(btnNewButton_2);
+		centerPanel.add(btnNewButton_1, BorderLayout.NORTH);
 		
 		JPanel westPanel = new JPanel();
 		contentPane.add(westPanel, BorderLayout.WEST);
@@ -73,12 +71,12 @@ public class RoomFrame extends JFrame {
 		player1IDPanel.add(idLabel);
 		
 		
-		JPanel player2Paenl = new JPanel();
-		player2Paenl.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		westPanel.add(player2Paenl);
+		JPanel player2Panel = new JPanel();
+		player2Panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		westPanel.add(player2Panel);
 		
 		JPanel player2IDPanel = new JPanel();
-		player2Paenl.add(player2IDPanel);
+		player2Panel.add(player2IDPanel);
 		
 		JLabel player2ID = new JLabel("ID");
 		player2IDPanel.add(player2ID);
@@ -117,6 +115,13 @@ public class RoomFrame extends JFrame {
 		southPanel.add(textField, BorderLayout.SOUTH);
 		textField.setColumns(10);
 	}
+	
+	public void enterNewUser(String newUserID) {
+		idLabel2.setText(newUserID);
+	}
+	
+	public void gameStart() {
+		map = new Map();
+	}
 
-	public void setDefaultCloseOperation(WindowListener windowListener) {}
 }

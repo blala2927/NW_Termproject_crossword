@@ -14,7 +14,6 @@ import javax.swing.JTextField;
 import javax.swing.JSplitPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Canvas;
 import javax.swing.ImageIcon;
 import java.awt.FlowLayout;
 
@@ -24,9 +23,6 @@ public class LoginFrame extends JFrame {
 	private JPasswordField pwField;
 	public JButton loginBtn;
 
-	/**
-	 * Create the frame.
-	 */
 	public LoginFrame() {
 		setTitle("·Î±×ÀÎ");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

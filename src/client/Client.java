@@ -2,20 +2,15 @@ package client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Iterator;
-
-import javax.swing.JFrame;
-import javax.swing.ListSelectionModel;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,8 +22,6 @@ public class Client {
 	private PrintWriter out;
 	private ObjectOutputStream oout;
 	private ObjectInputStream oin;
-	private HashMap<Integer, String> roomList;
-	private String[] roomNames;
 	private String userID, pw;
 	private LoginFrame loginFrame;
 	private LobbyFrame lobbyFrame;
@@ -62,11 +55,11 @@ public class Client {
 
 		try {
 			Socket socket = new Socket(serverAddress, PORT);
+			Object o;
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 			oin = new ObjectInputStream(socket.getInputStream());
 			//oout = new ObjectOutputStream(socket.getOutputStream());
-			
 
 			while(true) {
 				String input = in.readLine();
@@ -79,26 +72,46 @@ public class Client {
 				switch(type) {
 				case "LOGIN":
 					String loginState = inJSON.get("state").toString();
-					
+
 					if(loginState.equals("SUCCESS")) {
 						System.out.println("login success");
-						loginSuccess();
-						setList(oin.readObject());
+						System.out.println(userID);
+						lobbyActionHandler();
+						o = oin.readObject();
+						lobbyFrame.setList((HashMap<Integer, String>)o);
 					}
 					else if(loginState.equals("FAIL"))
 						System.out.println("login fail");
 					break;
-					
+
 				case "CREATEROOM":
 					String createState = inJSON.get("state").toString();
-					
+
 					if(createState.equals("SUCCESS")) {
 						lobbyFrame.setVisible(false);
-						roomFrame = new RoomFrame(inJSON.get("roomNum").toString(), userID);
+						o = oin.readObject();
+						roomFrame = (RoomFrame)o;
 						roomFrame.setVisible(true);
 					}
 					else if(createState.equals("FAIL"))
 						System.out.println("Fail create room");
+					break;
+
+				case "REFRESHROOM":
+					o = oin.readObject();
+					lobbyFrame.setList((HashMap<Integer, String>)o);
+					break;
+
+				case "ENTERROOM":
+					String enterState = inJSON.get("state").toString();
+					if(enterState.equals("SUCCESS")) {
+						o = oin.readObject();
+						roomFrame = (RoomFrame)o;
+						lobbyFrame.setVisible(false);
+						roomFrame.setVisible(true);
+					} 
+					else
+						System.out.println("Fail enter the room");
 					break;
 				}
 			}
@@ -107,20 +120,38 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	private void loginSuccess() {
+
+
+	private void lobbyActionHandler() {
 		loginFrame.setVisible(false);
 		loginFrame.dispose();
-		
+
 		lobbyFrame = new LobbyFrame();
 		lobbyFrame.setVisible(true);
-		
+
+		lobbyFrame.list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getButton() == 1) { } //클릭
+				if (e.getClickCount() == 2) {
+					String[] str = lobbyFrame.list.getSelectedValue().toString().split(" ");
+					// 더블클릭
+					System.out.println(str[0]);
+					JSONObject json = new JSONObject();
+					json.put("type", "ENTERROOM");
+					json.put("roomNum", str[0]);
+					json.put("userID", userID);
+					out.println(json.toString());
+				}
+				if (e.getButton() == 3) { } // 오른쪽 클릭
+			}
+		});
+
 		lobbyFrame.createRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				final OptionFrame optionFrame = new OptionFrame();
 				optionFrame.setVisible(true);
-				
+
 				optionFrame.btnCreateRoom.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						String roomName = optionFrame.roomNameText.getText();
@@ -143,20 +174,7 @@ public class Client {
 			}
 		});
 	}
-	
-	private void setList(Object o) {
-		roomList = (HashMap<Integer, String>) o;
-		roomNames = new String[roomList.size()];
-		
-		Iterator<Integer> it = roomList.keySet().iterator();
-		int i = 0;
-		while(it.hasNext()) {
-			roomNames[i++] = roomList.get(it.next());
-		}
-		
-		lobbyFrame.list.setListData(roomNames);		
-	}
-	
+
 	public static void main(String[] args) {
 		Client client = new Client();
 
