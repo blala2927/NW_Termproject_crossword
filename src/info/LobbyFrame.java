@@ -70,7 +70,7 @@ public class LobbyFrame extends JFrame {
 		int i = 0;
 		while(it.hasNext()) {
 			int roomNum = it.next();
-			roomNames[i++] = String.valueOf(roomNum) + " " + roomList.get(roomNum);
+			roomNames[i++] =  String.valueOf(roomNum) + " 번 방 " + "  방 이름 : " + roomList.get(roomNum);
 		}
 
 		list.setListData(roomNames);

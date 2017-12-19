@@ -55,63 +55,92 @@ public class Client {
 
 		try {
 			Socket socket = new Socket(serverAddress, PORT);
-			Object o;
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 			oin = new ObjectInputStream(socket.getInputStream());
 			//oout = new ObjectOutputStream(socket.getOutputStream());
 
 			while(true) {
+				Object o = null;
 				String input = in.readLine();
+				System.out.println(input);
 				stringIndex  = input.indexOf("{");
 				inJSON = (JSONObject) parser.parse(input.substring(stringIndex));
 				String type = inJSON.get("type").toString();
 				System.out.println(type);
 				JSONObject outJSON = new JSONObject();
-				
+				String state;
 				switch(type) {
 				case "LOGIN":
-					String loginState = inJSON.get("state").toString();
+					state = inJSON.get("state").toString();
 
-					if(loginState.equals("SUCCESS")) {
+					if(state.equals("SUCCESS")) {
 						System.out.println("login success");
 						System.out.println(userID);
 						lobbyActionHandler();
 						o = oin.readObject();
-						lobbyFrame.setList((HashMap<Integer, String>)o);
+						if(o != null)
+							lobbyFrame.setList((HashMap<Integer, String>)o);
 					}
-					else if(loginState.equals("FAIL"))
+					else if(state.equals("FAIL"))
 						System.out.println("login fail");
 					break;
 
 				case "CREATEROOM":
-					String createState = inJSON.get("state").toString();
+					state = inJSON.get("state").toString();
 
-					if(createState.equals("SUCCESS")) {
+					if(state.equals("SUCCESS")) {
+						roomNum = Integer.parseInt(inJSON.get("roomNum").toString());
 						lobbyFrame.setVisible(false);
 						o = oin.readObject();
 						roomFrame = (RoomFrame)o;
 						roomFrame.setVisible(true);
+						roomActionHandler();
 					}
-					else if(createState.equals("FAIL"))
+					else if(state.equals("FAIL"))
 						System.out.println("Fail create room");
 					break;
 
 				case "REFRESHROOM":
 					o = oin.readObject();
-					lobbyFrame.setList((HashMap<Integer, String>)o);
+					if(o != null)
+						lobbyFrame.setList((HashMap<Integer, String>)o);
 					break;
 
 				case "ENTERROOM":
-					String enterState = inJSON.get("state").toString();
-					if(enterState.equals("SUCCESS")) {
+					state = inJSON.get("state").toString();
+					if(state.equals("SUCCESS")) {
+						roomNum = Integer.parseInt(inJSON.get("roomNum").toString());
 						o = oin.readObject();
 						roomFrame = (RoomFrame)o;
 						lobbyFrame.setVisible(false);
 						roomFrame.setVisible(true);
+						roomActionHandler();
 					} 
 					else
 						System.out.println("Fail enter the room");
+					break;
+
+				case "NEWUSER":
+					System.out.println("NEWUSER");
+					System.out.println(inJSON.get("newUserID").toString());
+					roomFrame.idLabel2.setText(inJSON.get("newUserID").toString());
+					roomFrame.textArea.append(roomFrame.textArea.getText() + inJSON.get("newUserID").toString() + "님이 새로 참여하셨습니다.\n");
+					break;
+					
+				case "GAMESTART":
+					state = inJSON.get("state").toString();
+					if(state.equals("SUCCESS")) {
+						roomFrame.gameStart((Map)oin.readObject());
+						roomFrame.centerPanel.revalidate();
+						roomFrame.centerPanel.repaint();
+					}
+					else if(state.equals("FAIL"))
+						System.out.println("Fail start game");
+					break;
+					
+				case "EXITROOM" :
+					roomNum = -1;
 					break;
 				}
 			}
@@ -121,7 +150,42 @@ public class Client {
 		}
 	}
 
-
+	private void roomActionHandler() {
+		roomFrame.btnExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				roomFrame.dispose();
+				lobbyFrame.setVisible(true);
+				JSONObject json = new JSONObject();
+				json.put("type", "EXITROOM");
+				json.put("userID", userID);
+				json.put("roomNum", roomNum);
+				out.println(json);
+			}
+		});
+		
+		roomFrame.btnReady.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JSONObject json = new JSONObject();
+				json.put("type", "GAMEREADY");
+				json.put("userID", userID);
+				json.put("roomNum", roomNum);
+				out.println(json);
+			}
+		});
+		
+		roomFrame.btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JSONObject json = new JSONObject();
+				json.put("type", "GAMESTART");
+				json.put("userID", userID);
+				json.put("roomNum", roomNum);
+				out.println(json);
+				
+				System.out.print("map");
+			}
+		});
+	}
+	
 	private void lobbyActionHandler() {
 		loginFrame.setVisible(false);
 		loginFrame.dispose();

@@ -3,9 +3,11 @@ package info;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.Color;
+import java.io.Serializable;
+
 import javax.swing.SwingConstants;
 
-public class Map {
+public class Map implements Serializable{
 	private JPanel panel;
 	private JTextField textField; //따로 쓰지 않은 textField -> 이걸 정의해놓지 않으면 textField 복붙할 때 이 이름으로 먼저 생성됌
 	private JTextField textField_0;

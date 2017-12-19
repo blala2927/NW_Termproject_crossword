@@ -1,23 +1,18 @@
 package server;
 
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class User {
 	private String id = "";
 	private String name = "";
-	private int nowLocation;
+	private PrintWriter writer;
+	private ObjectOutputStream oout;
+	private int nowLocation = 0;
 	
 	public User(String id, String name) {
 		this.id = id;
-		nowLocation = 0;
-	}
-
-	public int getNowLocation() {
-		return nowLocation;
-	}
-
-	public void setNowLocation(int nowLocation) {
-		this.nowLocation = nowLocation;
 	}
 
 	public String getName() {
@@ -41,5 +36,32 @@ public class User {
 			return true;
 		else
 			return false;
+	}
+
+	public ObjectOutputStream getOout() {
+		return oout;
+	}
+
+
+	public void setOout(ObjectOutputStream oout) {
+		this.oout = oout;
+	}
+
+
+	public PrintWriter getWriter() {
+		return writer;
+	}
+
+
+	public void setWriter(PrintWriter writer) {
+		this.writer = writer;
+	}
+
+	public int getNowLocation() {
+		return nowLocation;
+	}
+
+	public void setNowLocation(int nowLocation) {
+		this.nowLocation = nowLocation;
 	}
 }

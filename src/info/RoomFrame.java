@@ -21,8 +21,18 @@ public class RoomFrame extends JFrame {
 	public Map map;
 	public JLabel idLabel;
 	public JLabel idLabel2;
-	private JTextField textField;
-	private JPanel centerPanel;
+	public JButton btnStart;
+	public JButton btnReady;
+	public JTextArea textArea;
+	public JTextField textField;
+	public JButton btnExit;
+	private JPanel player1Panel;
+	public JPanel centerPanel;
+	public JPanel westPanel;
+	public JPanel player1IDPanel;
+	public JPanel player2Panel;
+	public JPanel player2IDPanel;
+	public JPanel northPanel;
 	
 	/**
 	 * Create the frame.
@@ -41,22 +51,14 @@ public class RoomFrame extends JFrame {
 		centerPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		contentPane.add(centerPanel, BorderLayout.CENTER);
 		
-		JButton btnNewButton_1 = new JButton("게임시작");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				gameStart();
-				centerPanel.add(map.getContentPanel(), BorderLayout.CENTER);
-				System.out.println("Dd");
-			}
-		});
+		btnStart = new JButton("게임시작");
+		centerPanel.add(btnStart, BorderLayout.NORTH);
 		
-		centerPanel.add(btnNewButton_1, BorderLayout.NORTH);
-		
-		JPanel westPanel = new JPanel();
+		westPanel = new JPanel();
 		contentPane.add(westPanel, BorderLayout.WEST);
 		westPanel.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		JPanel player1Panel = new JPanel();
+		player1Panel = new JPanel();
 		player1Panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		westPanel.add(player1Panel);
 		player1Panel.setLayout(new BorderLayout(0, 0));
@@ -71,31 +73,32 @@ public class RoomFrame extends JFrame {
 		player1IDPanel.add(idLabel);
 		
 		
-		JPanel player2Panel = new JPanel();
+		player2Panel = new JPanel();
 		player2Panel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		westPanel.add(player2Panel);
 		
-		JPanel player2IDPanel = new JPanel();
+		player2IDPanel = new JPanel();
 		player2Panel.add(player2IDPanel);
 		
 		JLabel player2ID = new JLabel("ID");
 		player2IDPanel.add(player2ID);
 		
-		idLabel2 = new JLabel();
+		idLabel2 = new JLabel("     ");
 		player2IDPanel.add(idLabel2);
 		
-		JPanel northPanel = new JPanel();
+		northPanel = new JPanel();
 		contentPane.add(northPanel, BorderLayout.NORTH);
 		
-		JButton btnNewButton = new JButton("준비");
-		btnNewButton.addActionListener(new ActionListener() {
+		btnReady = new JButton("준비");
+		btnReady.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("ddddd");
 			}
 		});
-		northPanel.add(btnNewButton);
+		northPanel.add(btnReady);
 		
-		JButton button = new JButton("방 나가기");
-		northPanel.add(button);
+		btnExit = new JButton("방 나가기");
+		northPanel.add(btnExit);
 		
 		JPanel southPanel = new JPanel();
 		contentPane.add(southPanel, BorderLayout.SOUTH);
@@ -104,7 +107,8 @@ public class RoomFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		southPanel.add(scrollPane, BorderLayout.SOUTH);
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
+		textArea.setText(" ");
 		textArea.setRows(5);
 		textArea.setTabSize(40);
 		textArea.setEnabled(false);
@@ -120,8 +124,11 @@ public class RoomFrame extends JFrame {
 		idLabel2.setText(newUserID);
 	}
 	
-	public void gameStart() {
-		map = new Map();
+	public void gameStart(Map map) {
+		this.map = map;
+		centerPanel.add(map.getContentPanel());
+		centerPanel.revalidate();
+		centerPanel.repaint();
 	}
 
 }
