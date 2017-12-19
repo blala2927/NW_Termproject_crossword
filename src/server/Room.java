@@ -86,6 +86,17 @@ public class Room {
 		else
 			return false;
 	}
+	
+	public void broadcast(JSONObject inJSON) {
+		JSONObject outJSON = new JSONObject();
+		outJSON.put("type", "CHAT");
+		outJSON.put("userID", inJSON.get("userID").toString());
+		outJSON.put("content", inJSON.get("content").toString());
+		for(int i = 0; i < userList.size(); i++) {
+			userList.get(i).getWriter().println(outJSON.toString());
+		}
+	}
+	
 
 	public int getRoomNum() {
 		return roomNum;
@@ -138,14 +149,5 @@ public class Room {
 
 	public void setRoomFrame(RoomFrame roomFrame) {
 		this.roomFrame = roomFrame;
-	}
-
-	public void broadcast(String str) {
-		JSONObject json = new JSONObject();
-		json.put("type", "CHATTING");
-		json.put("message", str);
-		for(int i = 0; i < userList.size(); i++) {
-			userList.get(i).getWriter().println(json.toString());
-		}
 	}
 }

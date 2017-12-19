@@ -58,26 +58,33 @@ public class Client {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 			oin = new ObjectInputStream(socket.getInputStream());
-			//oout = new ObjectOutputStream(socket.getOutputStream());
 
 			while(true) {
 				Object o = null;
+				
 				String input = in.readLine();
 				System.out.println(input);
-				stringIndex  = input.indexOf("{");
+				
+				stringIndex = input.indexOf("{");
 				inJSON = (JSONObject) parser.parse(input.substring(stringIndex));
 				String type = inJSON.get("type").toString();
-				System.out.println(type);
+				
 				JSONObject outJSON = new JSONObject();
 				String state;
+				
 				switch(type) {
 				case "LOGIN":
 					state = inJSON.get("state").toString();
 
 					if(state.equals("SUCCESS")) {
-						System.out.println("login success");
 						System.out.println(userID);
+						loginFrame.setVisible(false);
+						loginFrame.dispose();
+						lobbyFrame = new LobbyFrame();
 						lobbyActionHandler();
+						
+						lobbyFrame.setVisible(true);
+						
 						o = oin.readObject();
 						if(o != null)
 							lobbyFrame.setList((HashMap<Integer, String>)o);
@@ -122,10 +129,12 @@ public class Client {
 					break;
 
 				case "NEWUSER":
-					System.out.println("NEWUSER");
-					System.out.println(inJSON.get("newUserID").toString());
 					roomFrame.idLabel2.setText(inJSON.get("newUserID").toString());
 					roomFrame.textArea.append(roomFrame.textArea.getText() + inJSON.get("newUserID").toString() + "님이 새로 참여하셨습니다.\n");
+					break;
+					
+				case "CHAT" :
+					roomFrame.textArea.append(inJSON.get("userID").toString() + " : " + inJSON.get("content").toString() + "\n");
 					break;
 					
 				case "GAMESTART":
@@ -138,6 +147,7 @@ public class Client {
 					else if(state.equals("FAIL"))
 						System.out.println("Fail start game");
 					break;
+					
 					
 				case "EXITROOM" :
 					roomNum = -1;
@@ -159,7 +169,7 @@ public class Client {
 				json.put("type", "EXITROOM");
 				json.put("userID", userID);
 				json.put("roomNum", roomNum);
-				out.println(json);
+				out.println(json.toJSONString());
 			}
 		});
 		
@@ -169,7 +179,7 @@ public class Client {
 				json.put("type", "GAMEREADY");
 				json.put("userID", userID);
 				json.put("roomNum", roomNum);
-				out.println(json);
+				out.println(json.toJSONString());
 			}
 		});
 		
@@ -179,20 +189,26 @@ public class Client {
 				json.put("type", "GAMESTART");
 				json.put("userID", userID);
 				json.put("roomNum", roomNum);
-				out.println(json);
+				out.println(json.toJSONString());
 				
 				System.out.print("map");
+			}
+		});
+		
+		roomFrame.textField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JSONObject json = new JSONObject();
+				json.put("type", "CHAT");
+				json.put("userID", userID);
+				json.put("roomNum", roomNum);
+				json.put("content", roomFrame.textField.getText());
+				out.println(json);
+				roomFrame.textField.setText("");
 			}
 		});
 	}
 	
 	private void lobbyActionHandler() {
-		loginFrame.setVisible(false);
-		loginFrame.dispose();
-
-		lobbyFrame = new LobbyFrame();
-		lobbyFrame.setVisible(true);
-
 		lobbyFrame.list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

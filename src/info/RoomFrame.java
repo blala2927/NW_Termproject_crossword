@@ -14,6 +14,10 @@ import java.awt.GridLayout;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.DropMode;
 
 public class RoomFrame extends JFrame {
 
@@ -40,7 +44,7 @@ public class RoomFrame extends JFrame {
 	public RoomFrame(int roomNum, String id) {
 		super(String.valueOf(roomNum));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 785, 718);
+		setBounds(1000, 30, 980, 1200);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -108,6 +112,8 @@ public class RoomFrame extends JFrame {
 		southPanel.add(scrollPane, BorderLayout.SOUTH);
 		
 		textArea = new JTextArea();
+		textArea.setFont(new Font("±¼¸²Ã¼", Font.PLAIN, 15));
+		textArea.setForeground(Color.BLACK);
 		textArea.setText(" ");
 		textArea.setRows(5);
 		textArea.setTabSize(40);

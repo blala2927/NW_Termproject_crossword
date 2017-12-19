@@ -72,6 +72,7 @@ public class Server {
 				Room room;
 				User user;
 				int stringIndex;
+				int index;
 
 				OutputStream outputStream = socket.getOutputStream();
 				oout = new ObjectOutputStream(outputStream);
@@ -140,6 +141,7 @@ public class Server {
 
 					room = null;
 					user = null;
+					index = -1;
 					
 					String type = inJSON.get("type").toString();
 					
@@ -190,8 +192,15 @@ public class Server {
 						}
 						break;
 						
+					case "CHAT" :
+						index = Integer.parseInt(inJSON.get("roomNum").toString()) - 1;
+						room = roomList.get(index);
+						room.broadcast(inJSON);
+						
+						break;
+						
 					case "GAMEREADY" :
-						int index = Integer.parseInt(inJSON.get("roomNum").toString()) - 1;
+						index = Integer.parseInt(inJSON.get("roomNum").toString()) - 1;
 						room = roomList.get(index);
 						room.ready();
 						roomList.add(index, room);

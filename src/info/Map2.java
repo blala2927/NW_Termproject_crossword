@@ -3,7 +3,6 @@ package info;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,45 +13,61 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class Map implements Serializable {
+public class Map2 extends JFrame {
 
+	
+	private JPanel contentPane;
 	private JPanel panel;
 	private JTextField[] textField = new JTextField[400];
-	public JLabel question1;
-	public JLabel question2;
-	public JLabel question3;
-	public JLabel question4;
-	public JLabel question5;
-	public JLabel question6;
-	public JLabel question7;
-	public JLabel question8;
-	public JLabel question9;
-	public JLabel question10;
-	public JLabel question11;
-	public JLabel question12;
-	public JLabel question13;
-	public JLabel question14;
-	public JLabel question15;
-	public JLabel question16;
-	public JLabel question17;
-	public JLabel question18;
-	public JLabel question19;
-	public JLabel question20;
-	public JLabel question21;
-	public JLabel question22;
-	public int[][] answer = {{0, 0, 11}, {1, 1, 8}, {1, 8 ,9}, {0, 45, 12},
+	private JLabel question1;
+	private JLabel question2;
+	private JLabel question3;
+	private JLabel question4;
+	private JLabel question5;
+	private JLabel question6;
+	private JLabel question7;
+	private JLabel question8;
+	private JLabel question9;
+	private JLabel question10;
+	private JLabel question11;
+	private JLabel question12;
+	private JLabel question13;
+	private JLabel question14;
+	private JLabel question15;
+	private JLabel question16;
+	private JLabel question17;
+	private JLabel question18;
+	private JLabel question19;
+	private JLabel question20;
+	private JLabel question21;
+	private JLabel question22;
+	private int[][] answer = {{0, 0, 11}, {1, 1, 8}, {1, 8 ,9}, {0, 45, 12},
 			{1, 34, 9}, {0, 141, 5}, {1, 145, 3}, {0, 165, 8},
 			{1, 171, 4}, {1, 220, 5}, {0, 220, 4}, {1, 222, 4},
 			{0, 242, 6}, {1, 247, 3}, {0, 287, 6}, {0, 229, 3},
 			{1, 230, 8}, {0, 349, 11}, {1, 216, 9}, {1, 118, 14},
 			{0, 341, 6}, {1, 346, 3}};//타입(0 가로, 1 세로), 번호, 시작 인덱스, 길이 
+
+	public static void main(String[] args) {
+		Map2 map = new Map2();
+		map.setVisible(true);
+	}
 	/**
 	 * Create the frame.
 	 */
-	public Map() {
+	public Map2() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1000, 1000);
+		contentPane = new JPanel();
+		contentPane.setLayout(null);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+
 		panel = new JPanel();
-		panel.setBounds(100, 100, 974, 951);
+		panel.setBounds(5, 5, 974, 951);
 		panel.setLayout(null);
+
+		contentPane.add(panel);
 		
 		question1 = new JLabel("1");
 		question1.setFont(new Font("Calibri", Font.PLAIN, 10));
@@ -195,7 +210,7 @@ public class Map implements Serializable {
 			textField[i].setBackground(new Color(255, 255, 255));
 			textField[i].setEditable(false);
 			textField[i].setHorizontalAlignment(SwingConstants.CENTER);
-			if(i % 20 == 0 && i != 0) {
+			if(i % 20 == 0) {
 				x = 0;
 				y = y + 40;
 			}
@@ -220,12 +235,4 @@ public class Map implements Serializable {
 						//45, 5, 40, 40
 	}
 
-	public void setAnswerText(String str) {
-		
-	}
-	
-	public JPanel getContentPanel() {
-		return panel;
-	}
 }
-
