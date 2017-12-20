@@ -21,7 +21,10 @@ public class Room {
 	private Map map;
 	private int readyNum = 0;
 	private List<User> userList = new ArrayList<User>();
-
+	private String[] answer = {"application", "protocol", "transport","transmission", "linkstate", "layer", "rip", 
+			"internet", "ebgp", "delay", "ddos", "ospf", "socket", "tcp", "tcp", 
+			"udp", "dijkstra", "propagation", "bandwidth", "distancevector", "header", "rtt"};
+	
 	public Room(int roomNum) {
 		this.roomNum = roomNum;
 	}
@@ -41,33 +44,33 @@ public class Room {
 			return true;
 		}
 	}
-	
+
 	public void ready() {
 		readyNum++;
 	}
-	
+
 	public boolean gameStart() throws IOException { 
 		if(readyNum != userList.size())
 			return false;
-		
+
 		else {
 			JSONObject json = new JSONObject();
 			map = new Map();
-			
+
 			json.put("type", "GAMESTART");
 			json.put("state", "SUCCESS");
-			
+
 			for(int i = 0; i < userList.size(); i++) {
 				PrintWriter writer = userList.get(i).getWriter();
 				writer.println(json.toJSONString());
 				ObjectOutputStream oout = userList.get(i).getOout();
 				oout.writeObject(map);
 			}
-			
+
 			return true;
 		}
 	}
-	
+
 	public void exitRoom(User user) {
 		synchronized(userList) {
 			for(int i = 0; i < userList.size(); i++) {
@@ -78,7 +81,37 @@ public class Room {
 			}
 		}
 	}
-	
+
+	public void checkAnswer(JSONObject inJSON, String userID) {
+		int questionNum = Integer.parseInt(inJSON.get("questionNum").toString());
+		String ans = inJSON.get("answer").toString();
+		JSONObject outJSON = new JSONObject();
+
+		if(answer[questionNum - 1].equals(ans)) {
+			outJSON.put("type", "ANSWER");
+			outJSON.put("state", "SUCCESS");
+			outJSON.put("answer", ans);
+			outJSON.put("questionNum", questionNum);
+			outJSON.put("userID", userID);
+
+			for(int i = 0; i < userList.size(); i++) {
+				PrintWriter writer = userList.get(i).getWriter();
+				writer.println(outJSON.toString());
+			}
+		}
+		else {
+			outJSON.put("type", "ANSWER");
+			outJSON.put("state", "FAIL");
+			outJSON.put("content", "¿À´ä!");
+
+			for(int i = 0; i < userList.size(); i++) {
+				if(userList.get(i).getId().equals(userID)) {
+					PrintWriter writer = userList.get(i).getWriter();
+					writer.println(outJSON.toString());
+				}
+			}
+		}
+	}
 
 	public boolean closeRoom() {
 		if(userList.size() == 0)
@@ -86,7 +119,7 @@ public class Room {
 		else
 			return false;
 	}
-	
+
 	public void broadcast(JSONObject inJSON) {
 		JSONObject outJSON = new JSONObject();
 		outJSON.put("type", "CHAT");
@@ -96,7 +129,7 @@ public class Room {
 			userList.get(i).getWriter().println(outJSON.toString());
 		}
 	}
-	
+
 
 	public int getRoomNum() {
 		return roomNum;

@@ -84,7 +84,7 @@ public class Server {
 					outJSON = new JSONObject();
 					outJSON.put("type", "LOGIN");
 					outJSON.put("state", "WAIT");
-					out.println(outJSON.toJSONString());
+					out.println(outJSON.toString());
 
 					String input = in.readLine();
 
@@ -125,7 +125,7 @@ public class Server {
 					else {
 						outJSON.put("type", "LOGIN");
 						outJSON.put("state", "FAIL");
-						out.println(outJSON.toJSONString());
+						out.println(outJSON.toString());
 					}
 				}
 
@@ -156,7 +156,7 @@ public class Server {
 							outJSON.put("type", "CREATEROOM");
 							outJSON.put("state", "SUCCESS");
 							outJSON.put("roomNum", atomicInteger.get());
-							out.println(outJSON.toJSONString());
+							out.println(outJSON.toString());
 							oout.writeObject(gameRoom.getRoomFrame());
 							
 							refreshRoomList();
@@ -164,7 +164,7 @@ public class Server {
 						else {
 							outJSON.put("type", "CREATEROOM");
 							outJSON.put("state", "FAIL");
-							out.println(outJSON.toJSONString());
+							out.println(outJSON.toString());
 						}
 						break;
 						
@@ -180,7 +180,7 @@ public class Server {
 							outJSON.put("type", "ENTERROOM");
 							outJSON.put("state", "SUCCESS");
 							outJSON.put("roomNum", i + 1);
-							out.println(outJSON.toJSONString());
+							out.println(outJSON.toString());
 							roomFrame.idLabel2.setText(inJSON.get("userID").toString());
 							room.setRoomFrame(roomFrame);
 							oout.writeObject(roomFrame);
@@ -188,7 +188,7 @@ public class Server {
 						else {
 							outJSON.put("type", "ENTERROOM");
 							outJSON.put("state", "FAIL");
-							out.println(outJSON.toJSONString());
+							out.println(outJSON.toString());
 						}
 						break;
 						
@@ -207,16 +207,24 @@ public class Server {
 						
 						outJSON.put("type", "GAMEREADY");
 						outJSON.put("type", "SUCCESS");
-						out.println(outJSON.toJSONString());
+						out.println(outJSON.toString());
 						break;
 						
 					case "GAMESTART" :
-						room = roomList.get(Integer.parseInt(inJSON.get("roomNum").toString()) - 1);
+						index = Integer.parseInt(inJSON.get("roomNum").toString()) - 1;
+						room = roomList.get(index);
 						if(!room.gameStart()) {
 							outJSON.put("type", "GAMESTART");
 							outJSON.put("type", "FAIL");
-							out.println(outJSON.toJSONString());
+							out.println(outJSON.toString());
 						}
+						break;
+						
+					case "ANSWER" :
+						index = Integer.parseInt(inJSON.get("roomNum").toString()) - 1;
+						System.out.println(inJSON.get("roomNum").toString());
+						room = roomList.get(index);
+						room.checkAnswer(inJSON, userID);
 						break;
 						
 					case "EXITROOM" :
@@ -230,7 +238,7 @@ public class Server {
 							roomList.remove(room.getRoomNum() - 1);
 						
 						outJSON.put("type", "REFRESHROOM");
-						out.println(outJSON.toJSONString());
+						out.println(outJSON.toString());
 						
 						HashMap<Integer, String> roomLists = new HashMap<Integer, String>();
 						
@@ -292,7 +300,7 @@ public class Server {
 				if(u.getNowLocation() != 0)
 					continue;
 				else {
-					u.getWriter().println(json.toJSONString());
+					u.getWriter().println(json.toString());
 					u.getOout().writeObject(roomListForNewRoom);
 				}
 			}

@@ -143,12 +143,24 @@ public class Client {
 						roomFrame.gameStart((Map)oin.readObject());
 						roomFrame.centerPanel.revalidate();
 						roomFrame.centerPanel.repaint();
+						mapActionHandler();
 					}
 					else if(state.equals("FAIL"))
 						System.out.println("Fail start game");
 					break;
 					
+				case "ANSWER" :
+					state = inJSON.get("state").toString();
 					
+					if(state.equals("SUCCESS")) {
+						if(inJSON.get("userID").equals(userID)) {
+							roomFrame.map.setAnswerText(inJSON.get("answer").toString(), Integer.parseInt(inJSON.get("questionNum").toString()));
+						}
+						
+					}
+					else {
+						roomFrame.alret(inJSON.get("content").toString());
+					}
 				case "EXITROOM" :
 					roomNum = -1;
 					break;
@@ -160,6 +172,232 @@ public class Client {
 		}
 	}
 
+	private void mapActionHandler() {
+		
+		roomFrame.map.question1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question1.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question2.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question3.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question4.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question5.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question5.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question6.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question7.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question7.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question8.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question8.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question9.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question9.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question10.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question10.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+			
+		});
+		
+		roomFrame.map.question11.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question11.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question12.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question12.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+			
+		});
+		
+		roomFrame.map.question13.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question13.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question14.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question14.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question15.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question15.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question16.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question16.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question17.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question17.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question18.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question18.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question19.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question19.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question20.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question20.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question21.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question21.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+		
+		roomFrame.map.question22.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int num = Integer.parseInt(roomFrame.map.question22.getText());
+				int length = roomFrame.map.answer[num - 1][2];
+				AnswerFrame answer = new AnswerFrame(num, length, roomNum, out);
+				answer.setVisible(true);
+			}
+		});
+	}
+	
+	
 	private void roomActionHandler() {
 		roomFrame.btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -169,7 +407,7 @@ public class Client {
 				json.put("type", "EXITROOM");
 				json.put("userID", userID);
 				json.put("roomNum", roomNum);
-				out.println(json.toJSONString());
+				out.println(json.toString());
 			}
 		});
 		
@@ -179,7 +417,7 @@ public class Client {
 				json.put("type", "GAMEREADY");
 				json.put("userID", userID);
 				json.put("roomNum", roomNum);
-				out.println(json.toJSONString());
+				out.println(json.toString());
 			}
 		});
 		
@@ -189,7 +427,8 @@ public class Client {
 				json.put("type", "GAMESTART");
 				json.put("userID", userID);
 				json.put("roomNum", roomNum);
-				out.println(json.toJSONString());
+				
+				out.println(json.toString());
 				
 				System.out.print("map");
 			}
@@ -206,6 +445,8 @@ public class Client {
 				roomFrame.textField.setText("");
 			}
 		});
+		
+		
 	}
 	
 	private void lobbyActionHandler() {
@@ -246,6 +487,7 @@ public class Client {
 							json.put("roomName", roomName);
 							json.put("peopleNum", peopleNum);
 							json.put("userID", userID);
+							System.out.println(json.toString());
 							out.println(json.toString());
 							optionFrame.dispose();
 						}
@@ -266,5 +508,4 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-
 }

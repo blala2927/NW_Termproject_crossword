@@ -220,8 +220,22 @@ public class Map implements Serializable {
 						//45, 5, 40, 40
 	}
 
-	public void setAnswerText(String str) {
+	public void setAnswerText(String str, int questionNum) {
+		int type = answer[questionNum - 1][0];
+		int index = answer[questionNum - 1][1];
+		int length = answer[questionNum - 1][2];
 		
+		if(type == 0) {
+			int j = 0;
+			for(int i = index; i < index + length; i++) {
+				textField[i].setText(String.valueOf(str.charAt(j++)));
+			}
+		} 
+		else {
+			int j = 0;
+			for(int i = index; i <= index + (length - 1) * 20; i = i + 20)
+				textField[i].setText(String.valueOf(str.charAt(j++)));
+		}
 	}
 	
 	public JPanel getContentPanel() {
