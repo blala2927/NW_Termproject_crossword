@@ -28,6 +28,12 @@ public class Client {
 	private RoomFrame roomFrame;
 	private int roomNum = -1;
 
+	/*
+	 * Where to run the client
+	 * The client connects to the server and proceeds to log in.
+	 * The client can request the server to create a room.
+	 * You can ask the server to start the game.
+	 */
 	public Client() {
 		userID = "";
 		pw = "";
@@ -47,6 +53,10 @@ public class Client {
 		});
 	}
 
+	/*
+	 *The client sends data to the server through JSON.
+	 *Check the type of data coming to JSON and execute the correct function. 
+	 */
 	public void run() {
 		String serverAddress = "127.0.0.1";
 		JSONParser parser = new JSONParser();
@@ -72,6 +82,10 @@ public class Client {
 				JSONObject outJSON = new JSONObject();
 				String state;
 				
+				/*
+				 * Check the type
+				 * Type of type : LOGIN, CREATEROOM, ENTERROOM, EXITROOM, GAMEREADY, GAMESTART, ANSWER
+				 */
 				switch(type) {
 				case "LOGIN":
 					state = inJSON.get("state").toString();
@@ -134,7 +148,19 @@ public class Client {
 					break;
 					
 				case "CHAT" :
+					System.out.println(inJSON.get("content").toString());
 					roomFrame.textArea.append(inJSON.get("userID").toString() + " : " + inJSON.get("content").toString() + "\n");
+					break;
+					
+				case "GAMEREADY":
+					state = inJSON.get("state").toString();
+					if(state.equals("SUCCESS"))
+						roomFrame.textArea.append(inJSON.get("userID").toString() + "님이 준비하셨습니다.\n");
+					else if(state.equals("GAMEREADY")) {
+						roomFrame.textArea.append(inJSON.get("userID").toString() + "님이 준비하셨습니다.\n");
+						roomFrame.textArea.append("게임을 시작할 수 있습니다!\n");
+					}
+					
 					break;
 					
 				case "GAMESTART":
@@ -155,8 +181,19 @@ public class Client {
 					if(state.equals("SUCCESS")) {
 						if(inJSON.get("userID").equals(userID)) {
 							roomFrame.map.setAnswerText(inJSON.get("answer").toString(), Integer.parseInt(inJSON.get("questionNum").toString()));
+							
 						}
 						
+						if(inJSON.get("userID").equals(roomFrame.idLabel.getText())) {
+							int a = Integer.parseInt(roomFrame.score1.getText());
+							a++;
+							roomFrame.score1.setText(String.valueOf(a));
+						} 
+						else {
+							int a = Integer.parseInt(roomFrame.score2.getText());
+							a++;
+							roomFrame.score2.setText(String.valueOf(a));
+						}
 					}
 					else {
 						roomFrame.alret(inJSON.get("content").toString());
@@ -172,6 +209,9 @@ public class Client {
 		}
 	}
 
+	/*
+	 * Map gui ActionHandler
+	 */
 	private void mapActionHandler() {
 		
 		roomFrame.map.question1.addMouseListener(new MouseAdapter() {
@@ -397,6 +437,9 @@ public class Client {
 		});
 	}
 	
+	/*
+	 * RoomFrame gui ActionHandler
+	 */
 	
 	private void roomActionHandler() {
 		roomFrame.btnExit.addActionListener(new ActionListener() {
@@ -448,6 +491,11 @@ public class Client {
 		
 		
 	}
+	
+	
+	/*
+	 * LobbyFrame gui ActionHandler
+	 */
 	
 	private void lobbyActionHandler() {
 		lobbyFrame.list.addMouseListener(new MouseAdapter() {

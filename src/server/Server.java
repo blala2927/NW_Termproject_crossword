@@ -25,6 +25,11 @@ import com.mysql.jdbc.PreparedStatement;
 import info.*;
 
 public class Server {
+	/*
+	 * The server manages the userList and roomList and manages 
+	 * the ObjectOutputStream and PrintWriter that send the object.
+	 * The server can receive the desired information by interlocking the database.
+	 */
 	public final static int PORT = 9000;
 	private static DB db;
 	private static HashMap<String, User> userList = new HashMap<String, User>();
@@ -52,6 +57,9 @@ public class Server {
 		}
 	}
 
+	/*
+	 * The server creates a new thread when the client's socket is detected.
+	 */
 	private static class Handler extends Thread{
 		private Socket socket;
 		private BufferedReader in;
@@ -64,6 +72,10 @@ public class Server {
 			this.socket = socket;
 		}
 
+		/*
+		 * The method that executes the thread
+		 * Check the JSON object input from the client and execute the function.
+		 */
 		public void run() {
 			try {
 				JSONParser parser = new JSONParser();
@@ -80,6 +92,10 @@ public class Server {
 				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				out = new PrintWriter(outputStream, true);
 
+				/*
+				 * Part of the login process
+				 * Checks the login JSON that the socket sends, and processes the login.
+				 */
 				while(true) {
 					outJSON = new JSONObject();
 					outJSON.put("type", "LOGIN");
@@ -129,6 +145,11 @@ public class Server {
 					}
 				}
 
+				/*
+				 * The client confirms the type of JSON object to be transmitted and carries out 
+				 * each function to transmit the desired information to the client.
+				 * Type of type : CREATEROOM, ENTERROOM, EXITROOM, CHAT, GAMEREADY, GAMESTART, ANSWER
+				 */
 				while(true) {
 					inJSON = new JSONObject();
 					String input = in.readLine();
@@ -202,12 +223,9 @@ public class Server {
 					case "GAMEREADY" :
 						index = Integer.parseInt(inJSON.get("roomNum").toString()) - 1;
 						room = roomList.get(index);
-						room.ready();
+						room.ready(inJSON.get("userID").toString());
 						roomList.add(index, room);
 						
-						outJSON.put("type", "GAMEREADY");
-						outJSON.put("type", "SUCCESS");
-						out.println(outJSON.toString());
 						break;
 						
 					case "GAMESTART" :
@@ -270,7 +288,10 @@ public class Server {
 				} catch(Exception e) {}
 			}
 		}
-
+		
+		/*
+		 * A Methods to broadcast to all users connected to the server.
+		 */
 		private void broadcast(JSONObject json) {
 			Iterator<PrintWriter> it = writers.keySet().iterator();
 			
@@ -279,6 +300,10 @@ public class Server {
 				writer.println(json.toString());
 			}		
 		}
+		
+		/*
+		 * A method to transfer a list of rooms to all users when a new room is created.
+		 */
 		
 		private void refreshRoomList() throws IOException {
 			HashMap<Integer, String> roomListForNewRoom = new HashMap<Integer, String>();
@@ -306,6 +331,10 @@ public class Server {
 			}
 		}
 
+		/*
+		 * The method to create a new room.
+		 */
+		
 		private Room createRoom(JSONObject json) {
 			synchronized(roomList) {
 				User userMaster = userList.get(json.get("userID").toString());
@@ -331,6 +360,10 @@ public class Server {
 			}
 		}
 
+		/*
+		 * Methods to handle login
+		 */
+		
 		private User login(String id, String pw) {
 			try {
 				PreparedStatement pstm = 

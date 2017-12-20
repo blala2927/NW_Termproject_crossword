@@ -32,7 +32,10 @@ import java.awt.FlowLayout;
 import java.awt.SystemColor;
 
 public class RoomFrame extends JFrame {
-
+	/*
+	 * RoomFrame class
+	 * The class in which the game is going
+	 */
 	private JPanel contentPane;
 	public Map map;
 	public JLabel idLabel;
@@ -52,7 +55,8 @@ public class RoomFrame extends JFrame {
 	private JPanel panel;
 	ImageIcon icon1;
 	private JLabel labelScore1;
-	private JLabel lblNewLabel_1;
+	public JLabel score1;
+	public JLabel score2;
 	
 	/**
 	 * Create the frame.
@@ -102,9 +106,9 @@ public class RoomFrame extends JFrame {
 		labelScore1 .setFont(new Font("휴먼매직체", Font.BOLD, 20));
 		panel.add(labelScore1);
 		
-		lblNewLabel_1 = new JLabel("0");
-		lblNewLabel_1  .setFont(new Font("휴먼매직체", Font.BOLD, 15));
-		panel.add(lblNewLabel_1);
+		score1 = new JLabel("0");
+		score1  .setFont(new Font("휴먼매직체", Font.BOLD, 15));
+		panel.add(score1);
 		
 		
 		player2Panel = new JPanel();
@@ -127,13 +131,13 @@ public class RoomFrame extends JFrame {
 		panel_1.setBackground(new Color(211, 211, 211));
 		player2Panel.add(panel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("점수");
-		lblNewLabel_2 .setFont(new Font("휴먼매직체", Font.BOLD, 20));
-		panel_1.add(lblNewLabel_2);
+		JLabel labelScore2 = new JLabel("점수");
+		labelScore2 .setFont(new Font("휴먼매직체", Font.BOLD, 20));
+		panel_1.add(labelScore2);
 		
-		JLabel lblNewLabel = new JLabel("0");
-		lblNewLabel  .setFont(new Font("휴먼매직체", Font.BOLD, 15));
-		panel_1.add(lblNewLabel);
+		score2 = new JLabel("0");
+		score2  .setFont(new Font("휴먼매직체", Font.BOLD, 15));
+		panel_1.add(score2);
 		
 		northPanel = new JPanel();
 		northPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));

@@ -20,6 +20,9 @@ import javax.swing.ListSelectionModel;
 import java.awt.Color;
 
 public class LobbyFrame extends JFrame {
+	/*
+	 * LobbyFrame class
+	 */
 	public JButton createRoomBtn;
 	public JList list;
 	private HashMap<Integer, String> roomList;

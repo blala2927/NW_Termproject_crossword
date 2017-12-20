@@ -16,6 +16,11 @@ import javax.swing.border.EmptyBorder;
 
 public class Map implements Serializable {
 
+	/*
+	 * Map class
+	 * game map 
+	 */
+	
 	private JPanel panel;
 	private JTextField[] textField = new JTextField[400];
 	public JLabel question1;
@@ -40,7 +45,7 @@ public class Map implements Serializable {
 	public JLabel question20;
 	public JLabel question21;
 	public JLabel question22;
-	public int[][] answer = {{0, 0, 11}, {1, 1, 8}, {1, 8 ,9}, {0, 45, 12},
+	public int[][] answer = {{0, 0, 11}, {1, 1, 8}, {1, 7 ,9}, {0, 45, 12},
 			{1, 34, 9}, {0, 141, 5}, {1, 145, 3}, {0, 165, 8},
 			{1, 171, 4}, {1, 220, 5}, {0, 220, 4}, {1, 222, 4},
 			{0, 242, 6}, {1, 247, 3}, {0, 287, 6}, {0, 229, 3},
@@ -69,7 +74,7 @@ public class Map implements Serializable {
 		question3 = new JLabel("3");
 		question3.setFont(new Font("Calibri", Font.PLAIN, 10));
 		question3.setHorizontalAlignment(SwingConstants.LEFT);
-		question3.setBounds(329, 7, 22, 18);
+		question3.setBounds(289, 7, 22, 18);
 		panel.add(question3);
 		
 		question4 = new JLabel("4");

@@ -12,6 +12,11 @@ import info.Map;
 import info.RoomFrame;
 
 public class Room {
+	/*
+	 * Game room class
+	 * The user who is in the room is managed.
+	 * You can broadcast to the users who are in the room and you can send the progress of the game.
+	 */
 	private int roomNum;
 	private String roomName;
 	private String mode;
@@ -22,12 +27,16 @@ public class Room {
 	private int readyNum = 0;
 	private List<User> userList = new ArrayList<User>();
 	private String[] answer = {"application", "protocol", "transport","transmission", "linkstate", "layer", "rip", 
-			"internet", "ebgp", "delay", "ddos", "ospf", "socket", "tcp", "tcp", 
+			"internet", "ebgp", "delay", "ddos", "ospf", "socket", "tcp", "packet",
 			"udp", "dijkstra", "propagation", "bandwidth", "distancevector", "header", "rtt"};
 	
 	public Room(int roomNum) {
 		this.roomNum = roomNum;
 	}
+	
+	/*
+	 * The method that handles the user entering the room.
+	 */
 
 	public boolean enterRoom(User newUser) {
 		if(userList.size() == maxPersonnel)
@@ -45,9 +54,29 @@ public class Room {
 		}
 	}
 
-	public void ready() {
+	/*
+	 * The method that handles ready state.
+	 */
+
+	public void ready(String readyUser) {
 		readyNum++;
+		JSONObject outJSON = new JSONObject();
+		outJSON.put("type", "GAMEREADY");
+		outJSON.put("state", "SUCCESS");
+		outJSON.put("userID", readyUser);
+		if(readyNum == userList.size())
+			outJSON.put("state", "GAMEREADY");
+		
+		for(int i = 0; i < userList.size(); i++) {
+			PrintWriter writer = userList.get(i).getWriter();
+			writer.println(outJSON.toString());
+		}
+		
 	}
+
+	/*
+	 * The method that handles game start.
+	 */
 
 	public boolean gameStart() throws IOException { 
 		if(readyNum != userList.size())
@@ -70,6 +99,10 @@ public class Room {
 			return true;
 		}
 	}
+	
+	/*
+	 * The method that handles the user exit room.
+	 */
 
 	public void exitRoom(User user) {
 		synchronized(userList) {
@@ -81,6 +114,10 @@ public class Room {
 			}
 		}
 	}
+	
+	/*
+	 * The method that handles check an answer.
+	 */
 
 	public void checkAnswer(JSONObject inJSON, String userID) {
 		int questionNum = Integer.parseInt(inJSON.get("questionNum").toString());
@@ -112,6 +149,10 @@ public class Room {
 			}
 		}
 	}
+	
+	/*
+	 * The method that handles the user entering the room.
+	 */
 
 	public boolean closeRoom() {
 		if(userList.size() == 0)
@@ -120,6 +161,10 @@ public class Room {
 			return false;
 	}
 
+	/*
+	 * The method that handles broadcast
+	 */
+	
 	public void broadcast(JSONObject inJSON) {
 		JSONObject outJSON = new JSONObject();
 		outJSON.put("type", "CHAT");

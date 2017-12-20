@@ -3,6 +3,9 @@ package info;
 import server.DB;
 
 public class QuestionList {
+	/*
+	 * List of question
+	 */
 	private static QuestionList questionList;
 	private int numberOfQuestion = 22;
 	private String q[] = new String[numberOfQuestion];

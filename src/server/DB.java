@@ -5,6 +5,10 @@ import java.sql.ResultSet;
 import com.mysql.jdbc.Statement;
 
 public class DB {
+	/*
+	 * Connect the database
+	 * Use singletone pattern
+	 */
 	private static DB db;
 	final static String ip ="jdbc:mysql://localhost?characterEncoding=utf-8";
 	final static String id ="root";

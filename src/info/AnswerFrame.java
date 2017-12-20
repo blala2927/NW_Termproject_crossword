@@ -22,7 +22,9 @@ import java.awt.Font;
 import java.awt.Color;
 
 public class AnswerFrame extends JFrame{
-
+	/*
+	 * AnswerFrmae class
+	 */
 	private JPanel contentPane;
 	private JTextField textField;
 	public JButton btnSubmit;

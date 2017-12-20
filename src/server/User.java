@@ -5,6 +5,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class User {
+	/*
+	 * User class
+	 * Save information of users
+	 */
 	private String id = "";
 	private String name = "";
 	private PrintWriter writer;

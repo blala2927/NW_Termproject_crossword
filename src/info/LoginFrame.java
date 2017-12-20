@@ -21,6 +21,10 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 
 public class LoginFrame extends JFrame {
+	/*
+	 * LoginFrame
+	 * Client can login with this frame
+	 */
 	private JPanel contentPane;
 	private JTextField idField;
 	private JPasswordField pwField;
@@ -35,7 +39,7 @@ public class LoginFrame extends JFrame {
 	public LoginFrame() {
 		setTitle("crossword");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 361, 505);
+		setBounds(700, 200, 361, 505);
 		icon1 = new ImageIcon("C:\\Users\\kjy79\\workspace\\CrossPuzzle\\src\\info\\back1.png");
 		contentPane = new JPanel() {
 			public void paintComponent(Graphics g) {

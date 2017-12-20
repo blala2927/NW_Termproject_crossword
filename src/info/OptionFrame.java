@@ -26,7 +26,10 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 public class OptionFrame extends JFrame {
-
+	/*
+	 * OptionFrame class
+	 * It can make a room.
+	 */
 	private JPanel contentPane;
 	public JTextField peopleNumText;
 	public String mode;
